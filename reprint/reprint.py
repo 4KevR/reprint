@@ -6,6 +6,7 @@ import sys
 import time
 import threading
 from math import ceil
+import colorama
 
 import six
 if six.PY2:
@@ -20,7 +21,7 @@ last_output_lines = 0
 overflow_flag = False
 is_atty = sys.stdout.isatty()
 
-magic_char = "\033[F"
+magic_char = "\x1b[1A"
 
 widths = [
     (126,    1), (159,    0), (687,     1), (710,   0), (711,   1),
@@ -135,6 +136,8 @@ def print_multi_line(content, force_single_line, sort_key):
     global last_output_lines
     global overflow_flag
     global is_atty
+    
+    colorama.init()
 
     if not is_atty:
         if isinstance(content, list):
@@ -175,7 +178,7 @@ def print_multi_line(content, force_single_line, sort_key):
 
     # 回到初始输出位置
     # back to the origin pos
-    print(magic_char * (max(last_output_lines, lines)-1), end="")
+    print(magic_char * (max(last_output_lines, lines)), end="")
     sys.stdout.flush()
     last_output_lines = lines
 
